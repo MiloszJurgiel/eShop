@@ -33,7 +33,7 @@ jobs:
 
       # The Aspire workload is intentionally NOT installed because we do not build the AppHost in CI.
       - name: Restore solution
-        run: dotnet restore eShop.sln || dotnet restore eShop.slnx
+        run: dotnet restore eShop.sln
 
       - name: Build in-scope API and test projects
         run: |
