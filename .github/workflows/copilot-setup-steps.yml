@@ -40,7 +40,7 @@ jobs:
           dotnet build src/Catalog.API/Catalog.API.csproj --configuration Release --no-restore
           dotnet build src/Basket.API/Basket.API.csproj --configuration Release --no-restore
           dotnet build src/Ordering.API/Ordering.API.csproj --configuration Release --no-restore
-          dotnet build src/Identity.API/Identity.API.csproj --configuration Release --no-restore
+          dotnet build src/Identity.API/Identity.API.csproj --configuration Release --no-restore -p:LibraryRestore=False
           dotnet build tests/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj --configuration Release --no-restore
           dotnet build tests/Basket.UnitTests/Basket.UnitTests.csproj --configuration Release --no-restore
           dotnet build tests/Ordering.UnitTests/Ordering.UnitTests.csproj --configuration Release --no-restore
