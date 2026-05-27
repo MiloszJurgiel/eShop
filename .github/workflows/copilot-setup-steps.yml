@@ -1,0 +1,73 @@
+name: copilot-setup-steps
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  copilot-setup-steps:
+    name: copilot-setup-steps
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Setup repository SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore solution
+        run: |
+          if [ -f eShop.sln ]; then
+            dotnet restore eShop.sln
+          else
+            dotnet restore eShop.slnx
+          fi
+
+      # Aspire workload is intentionally not installed because this workflow does not build the AppHost in CI.
+      - name: Build in-scope API projects
+        run: |
+          projects=(
+            src/Catalog.API/Catalog.API.csproj
+            src/Basket.API/Basket.API.csproj
+            src/Ordering.API/Ordering.API.csproj
+            src/Identity.API/Identity.API.csproj
+          )
+
+          for project in "${projects[@]}"; do
+            dotnet build "$project" --configuration Release --no-restore
+          done
+
+      - name: Build in-scope test projects
+        run: |
+          projects=(
+            tests/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj
+            tests/Basket.UnitTests/Basket.UnitTests.csproj
+            tests/Ordering.UnitTests/Ordering.UnitTests.csproj
+            tests/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj
+          )
+
+          for project in "${projects[@]}"; do
+            dotnet build "$project" --configuration Release --no-restore
+          done
