@@ -19,11 +19,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup .NET 9 SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 9.0.x
-
       - name: Setup repository SDK
         uses: actions/setup-dotnet@v4
         with:
@@ -33,11 +28,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('global.json', 'nuget.config', 'Directory.Packages.props', 'src/**/*.csproj', 'tests/**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Restore in-scope projects
+      # Explore is read-only and backend-fixer is scoped to backend microservices,
+      # so keep setup limited to the backend service slice instead of the whole solution.
+      # Aspire workload is intentionally not installed because this workflow does not build the AppHost in CI.
+      - name: Restore backend agent projects
         run: |
           projects=(
             src/Catalog.API/Catalog.API.csproj

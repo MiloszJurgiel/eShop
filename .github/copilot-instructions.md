@@ -17,10 +17,11 @@ eShop is a reference .NET eCommerce application built with a services-based arch
 - Do not modify unrelated frontend, mobile, or client experience projects for backend service tasks.
 
 ## Build and test
-- Restore the solution first: `dotnet restore eShop.sln`
+- For backend service tasks, restore only the in-scope service project and its corresponding test project(s); do not restore the full solution.
 - Build a target service with: `dotnet build src/<service>/<service>.csproj`
 - Run unit tests with: `dotnet test tests/<service>.UnitTests/`
 - For Catalog and Ordering API end-to-end behavior, use the existing functional test projects under `tests/`.
+- For exploratory or read-only tasks, prefer search and file inspection first, and only build or test when it is needed to validate a change.
 
 ## Coding conventions
 - Follow the validation approach already used by the touched service; do not introduce a new validation framework or style.
