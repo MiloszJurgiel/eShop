@@ -23,6 +23,12 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         return _webApplicationFactory.CreateDefaultClient(handler);
     }
 
+    private HttpClient CreateHttpClientWithHeaderVersioning(ApiVersion apiVersion)
+    {
+        var handler = new ApiVersionHandler(new HeaderApiVersionWriter("api-version"), apiVersion);
+        return _webApplicationFactory.CreateDefaultClient(handler);
+    }
+
     [Theory]
     [InlineData(1.0)]
     [InlineData(2.0)]
@@ -39,6 +45,26 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
 
         // Assert 103 total items (101 seeded + 2 added by AddCatalogItem tests) with 5 retrieved from index 0
+        Assert.Equal(103, result.Count);
+        Assert.Equal(0, result.PageIndex);
+        Assert.Equal(5, result.PageSize);
+    }
+
+    [Theory]
+    [InlineData(1.0)]
+    [InlineData(2.0)]
+    public async Task GetCatalogItemsRespectsPageSizeWithHeaderVersioning(double version)
+    {
+        var _httpClient = CreateHttpClientWithHeaderVersioning(new ApiVersion(version));
+
+        // Act
+        var response = await _httpClient.GetAsync("/api/catalog/items?pageIndex=0&pageSize=5", TestContext.Current.CancellationToken);
+
+        // Assert - api-version header is accepted and the correct version is served
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
+
         Assert.Equal(103, result.Count);
         Assert.Equal(0, result.PageIndex);
         Assert.Equal(5, result.PageSize);
