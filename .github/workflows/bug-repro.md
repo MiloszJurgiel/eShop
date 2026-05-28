@@ -14,7 +14,7 @@ tools:
   github:
     mode: gh-proxy
     toolsets: [default]
-  bash: [pwd, ls, find, cat, grep, jq, sed, awk, head, tail, dotnet, npm, node, python3, timeout]
+  bash: [cat, grep, jq, dotnet, npm, node, python3, timeout]
 safe-outputs:
   mentions: false
   allowed-github-references: []
