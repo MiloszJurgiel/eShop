@@ -2,6 +2,7 @@
 description: Review the repository's current security findings each day at 3PM Europe/Warsaw time and publish them as a discussion-style report.
 on:
   schedule:
+    # 13:00 UTC covers 15:00 CEST and 14:00 UTC covers 15:00 CET.
     - cron: "0 13 * * *"
     - cron: "0 14 * * *"
   workflow_dispatch:
@@ -23,7 +24,7 @@ safe-outputs:
   create-discussion:
     title-prefix: "Daily Security Findings:"
     close-older-discussions: true
-    expires: 30
+    expires: 30d
 strict: true
 timeout-minutes: 10
 ---
