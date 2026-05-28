@@ -18,7 +18,6 @@ tools:
 safe-outputs:
   mentions: false
   allowed-github-references: []
-  max-bot-mentions: 0
   create-discussion:
     title-prefix: "Daily Security Findings:"
     close-older-discussions: true
