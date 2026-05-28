@@ -5,6 +5,7 @@ namespace eShop.Identity.API.Controllers;
 [Route("api/identity")]
 public class IdentityController(UserManager<ApplicationUser> userManager) : ControllerBase
 {
+    [Authorize(Roles = "Admin")]
     [HttpPost("refresh-claims")]
     public async Task<IActionResult> RefreshClaims([FromBody] RefreshClaimsRequest request)
     {
