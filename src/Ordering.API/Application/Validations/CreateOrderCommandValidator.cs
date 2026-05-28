@@ -14,6 +14,8 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
         RuleFor(command => command.CardSecurityNumber).NotEmpty().Length(3);
         RuleFor(command => command.CardTypeId).NotEmpty();
         RuleFor(command => command.OrderItems).Must(ContainOrderItems).WithMessage("No order items found");
+        RuleForEach(command => command.OrderItems)
+            .ChildRules(item => item.RuleFor(i => i.Units).GreaterThan(0).WithMessage("Quantity must be greater than zero"));
 
         if (logger.IsEnabled(LogLevel.Trace))
         {
