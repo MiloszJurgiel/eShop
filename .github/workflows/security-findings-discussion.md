@@ -8,12 +8,13 @@ on:
 permissions:
   contents: read
   actions: read
+  discussions: read
   security-events: read
 tools:
   github:
     mode: gh-proxy
-    toolsets: [default]
-  bash: ["*"]
+    toolsets: [default, code_security, secret_protection]
+  bash: [date, gh, jq]
 safe-outputs:
   mentions: false
   allowed-github-references: []
@@ -52,6 +53,7 @@ Use GitHub tools first. If needed, use `gh api` from bash for read-only inspecti
 ### Report Requirements
 
 - Use a title suffix that includes the current Europe/Warsaw date, for example `2026-05-28`.
+- Before creating a discussion, check whether this workflow already created one for the same Europe/Warsaw date. If it already exists, call `noop` and stop.
 - Keep the discussion focused on current findings only.
 - Summarize totals near the top.
 - Group findings by source (`Code scanning`, `Secret scanning`).
@@ -62,6 +64,7 @@ Use GitHub tools first. If needed, use `gh api` from bash for read-only inspecti
   - affected location or secret type when available
   - direct GitHub URL
 - If a findings source cannot be queried, state that clearly in the report instead of guessing.
+- Prefer the `Security` discussion category when it exists; otherwise use `General` or the repository default category.
 
 ### Formatting
 
