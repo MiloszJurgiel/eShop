@@ -15,6 +15,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
+builder.Services.AddScoped<ClaimsRefreshCookieEvents>();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.EventsType = typeof(ClaimsRefreshCookieEvents);
+});
+
 builder.Services.AddIdentityServer(options =>
 {
     //options.IssuerUri = "null";
@@ -52,6 +59,7 @@ app.UseRouting();
 app.UseIdentityServer();
 app.UseAuthorization();
 
+app.MapControllers();
 app.MapDefaultControllerRoute();
 
 app.Run();

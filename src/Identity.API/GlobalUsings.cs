@@ -16,6 +16,7 @@ global using Duende.IdentityServer.Services;
 global using Duende.IdentityServer.Stores;
 global using Duende.IdentityServer.Validation;
 global using Microsoft.AspNetCore.Authentication;
+global using Microsoft.AspNetCore.Authentication.Cookies;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
@@ -41,7 +42,6 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Polly;
 global using eShop.ServiceDefaults;
-
 
 
 
