@@ -5,6 +5,7 @@ namespace eShop.HybridApp.Services;
 
 [JsonSerializable(typeof(CatalogItem))]
 [JsonSerializable(typeof(CatalogResult))]
+[JsonSerializable(typeof(CatalogBrandsResult))]
 [JsonSerializable(typeof(List<CatalogItem>))]
 [JsonSerializable(typeof(CatalogBrand[]))]
 [JsonSerializable(typeof(CatalogItemType[]))]

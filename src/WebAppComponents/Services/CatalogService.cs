@@ -37,9 +37,9 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
 
     public async Task<IEnumerable<CatalogBrand>> GetBrands()
     {
-        var uri = $"{remoteServiceBaseUrl}catalogBrands";
-        var result = await httpClient.GetFromJsonAsync<CatalogBrand[]>(uri);
-        return result!;
+        var uri = $"{remoteServiceBaseUrl}catalogBrands?pageSize=100&pageIndex=0";
+        var result = await httpClient.GetFromJsonAsync<CatalogBrandsResult>(uri);
+        return result!.Data;
     }
 
     public async Task<IEnumerable<CatalogItemType>> GetTypes()

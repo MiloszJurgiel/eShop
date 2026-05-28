@@ -12,5 +12,6 @@ public record CatalogItem(
     CatalogItemType CatalogType);
 
 public record CatalogResult(int PageIndex, int PageSize, int Count, List<CatalogItem> Data);
+public record CatalogBrandsResult(int PageIndex, int PageSize, int Count, List<CatalogBrand> Data);
 public record CatalogBrand(int Id, string Brand);
 public record CatalogItemType(int Id, string Type);

@@ -10,6 +10,7 @@ namespace eShop.ClientApp.Services;
     NumberHandling = JsonNumberHandling.AllowReadingFromString)]
 [JsonSerializable(typeof(CancelOrderCommand))]
 [JsonSerializable(typeof(CatalogBrand))]
+[JsonSerializable(typeof(CatalogBrandsRoot))]
 [JsonSerializable(typeof(CatalogItem))]
 [JsonSerializable(typeof(CatalogRoot))]
 [JsonSerializable(typeof(CatalogType))]

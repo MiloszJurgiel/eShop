@@ -66,11 +66,11 @@ public class CatalogService : ICatalogService
 
     public async Task<IEnumerable<CatalogBrand>> GetCatalogBrandAsync()
     {
-        var uri = UriHelper.CombineUri(_settingsService.GatewayCatalogEndpointBase, $"{ApiUrlBase}/catalogbrands?{ApiVersion}");
+        var uri = UriHelper.CombineUri(_settingsService.GatewayCatalogEndpointBase, $"{ApiUrlBase}/catalogbrands?PageSize=100&PageIndex=0&{ApiVersion}");
 
-        var brands = await _requestProvider.GetAsync<IEnumerable<CatalogBrand>>(uri).ConfigureAwait(false);
+        var brands = await _requestProvider.GetAsync<CatalogBrandsRoot>(uri).ConfigureAwait(false);
 
-        return brands?.ToArray() ?? Enumerable.Empty<CatalogBrand>();
+        return brands?.Data?.ToArray() ?? Enumerable.Empty<CatalogBrand>();
     }
 
     public async Task<IEnumerable<CatalogType>> GetCatalogTypeAsync()

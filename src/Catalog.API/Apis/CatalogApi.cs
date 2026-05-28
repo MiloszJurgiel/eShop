@@ -81,12 +81,10 @@ public static class CatalogApi
             .WithSummary("List catalog item types")
             .WithDescription("Get a list of the types of catalog items")
             .WithTags("Types");
-        api.MapGet("/catalogbrands",
-            [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
-            async (CatalogContext context) => await context.CatalogBrands.OrderBy(x => x.Brand).ToListAsync())
+        api.MapGet("/catalogbrands", GetAllBrands)
             .WithName("ListItemBrands")
             .WithSummary("List catalog item brands")
-            .WithDescription("Get a list of the brands of catalog items")
+            .WithDescription("Get a paginated list of the brands of catalog items")
             .WithTags("Brands");
 
         // Routes for modifying catalog items.
@@ -197,6 +195,26 @@ public static class CatalogApi
         [Description("The name of the item to return")] string name)
     {
         return await GetAllItems(paginationRequest, services, name, null, null);
+    }
+
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Ok<PaginatedItems<CatalogBrand>>> GetAllBrands(
+        [AsParameters] PaginationRequest paginationRequest,
+        CatalogContext context)
+    {
+        var pageSize = paginationRequest.PageSize;
+        var pageIndex = paginationRequest.PageIndex;
+
+        var root = context.CatalogBrands.OrderBy(x => x.Brand);
+
+        var totalItems = await root.LongCountAsync();
+
+        var itemsOnPage = await root
+            .Skip(pageSize * pageIndex)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return TypedResults.Ok(new PaginatedItems<CatalogBrand>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
     [ProducesResponseType<byte[]>(StatusCodes.Status200OK, "application/octet-stream",
