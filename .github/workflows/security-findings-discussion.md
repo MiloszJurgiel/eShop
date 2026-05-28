@@ -23,7 +23,6 @@ safe-outputs:
     title-prefix: "Daily Security Findings:"
     close-older-discussions: true
     expires: 30
-    fallback-to-issue: true
 strict: true
 timeout-minutes: 10
 ---
