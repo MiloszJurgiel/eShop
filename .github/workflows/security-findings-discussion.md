@@ -9,6 +9,8 @@ permissions:
   contents: read
   actions: read
   discussions: read
+  issues: read
+  pull-requests: read
   security-events: read
 tools:
   github:
