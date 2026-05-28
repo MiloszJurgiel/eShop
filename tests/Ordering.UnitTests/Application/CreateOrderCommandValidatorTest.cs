@@ -1,5 +1,4 @@
 using eShop.Ordering.API.Application.Validations;
-using FluentValidation;
 
 namespace eShop.Ordering.UnitTests.Application;
 
