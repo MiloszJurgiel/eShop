@@ -343,14 +343,14 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Act
         var response = await _httpClient.GetAsync("api/catalog/catalogbrands", TestContext.Current.CancellationToken);
 
-        // Arrange
+        // Assert
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogBrand>>(body, _jsonSerializerOptions);
 
         // Assert
-        Assert.Equal(13, result.Count);
         Assert.NotNull(result);
+        Assert.Equal(13, result.Count);
         Assert.NotNull(result.Data);
         Assert.Equal(0, result.PageIndex);
         Assert.Equal(10, result.PageSize);
@@ -367,7 +367,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Act
         var response = await _httpClient.GetAsync("api/catalog/catalogbrands?PageSize=5&PageIndex=2", TestContext.Current.CancellationToken);
 
-        // Arrange
+        // Assert
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogBrand>>(body, _jsonSerializerOptions);
