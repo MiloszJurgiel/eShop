@@ -2,7 +2,8 @@
 description: Review the repository's current security findings each day at 3PM Europe/Warsaw time and publish them as a discussion-style report.
 on:
   schedule:
-    # 13:00 UTC covers 15:00 CEST and 14:00 UTC covers 15:00 CET.
+    # These two UTC schedules intentionally run every day for DST coverage:
+    # one creates the report at 15:00 Europe/Warsaw and the other exits via noop.
     - cron: "0 13 * * *"
     - cron: "0 14 * * *"
   workflow_dispatch:
@@ -33,7 +34,7 @@ timeout-minutes: 10
 
 Review the current security findings for ${{ github.repository }} and publish a daily report.
 
-This workflow is scheduled twice per day in UTC to handle daylight-saving changes. Before doing any other work, verify the local time in Europe/Warsaw:
+This workflow is scheduled twice per day in UTC to handle daylight-saving changes. Exactly one daily run should proceed; the other should exit through `noop`. Before doing any other work, verify the local time in Europe/Warsaw:
 
 - Run `TZ=Europe/Warsaw date '+%H:%M %Z'`.
 - If the local hour is not `15`, call `noop` with a short explanation and stop.
@@ -53,7 +54,7 @@ Use GitHub tools first. If needed, use `gh api` from bash for read-only inspecti
 
 ### Report Requirements
 
-- Use a title suffix that includes the current Europe/Warsaw date, for example `2026-05-28`.
+- Use a title suffix that includes the current Europe/Warsaw date, for example `YYYY-MM-DD`.
 - Before creating a discussion, check whether this workflow already created one for the same Europe/Warsaw date. If it already exists, call `noop` and stop.
 - Keep the discussion focused on current findings only.
 - Summarize totals near the top.
