@@ -29,6 +29,7 @@ safe-outputs:
     allowed: [copilot]
     custom-agent: "backend-fixer"
     base-branch: "${{ github.event.repository.default_branch }}"
+    github-token: ${{ secrets.COPILOT_ASSIGN_PAT }}
     max: 1
 strict: true
 timeout-minutes: 5
