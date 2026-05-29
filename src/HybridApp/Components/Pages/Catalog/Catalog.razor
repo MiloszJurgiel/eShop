@@ -56,17 +56,41 @@
     public string? SearchText { get; set; }
 
     CatalogResult? catalogResult;
+    int? previousPage;
+    int? previousBrandId;
+    int? previousItemTypeId;
+    string? previousSearchText;
 
     static IEnumerable<int> GetVisiblePageIndexes(CatalogResult result)
         => Enumerable.Range(1, (int)Math.Ceiling(1.0 * result.Count / PageSize));
 
     protected override async Task OnParametersSetAsync()
     {
+        var page = Page.GetValueOrDefault(1) - 1;
+        var normalizedSearchText = NormalizeSearchText(SearchText);
+
+        if (catalogResult is not null
+            && previousPage == page
+            && previousBrandId == BrandId
+            && previousItemTypeId == ItemTypeId
+            && previousSearchText == normalizedSearchText)
+        {
+            return;
+        }
+
+        previousPage = page;
+        previousBrandId = BrandId;
+        previousItemTypeId = ItemTypeId;
+        previousSearchText = normalizedSearchText;
+
         catalogResult = await CatalogService.GetCatalogItems(
-            Page.GetValueOrDefault(1) - 1,
+            page,
             PageSize,
             BrandId,
             ItemTypeId,
-            SearchText);
+            normalizedSearchText);
     }
+
+    private static string? NormalizeSearchText(string? searchText)
+        => string.IsNullOrWhiteSpace(searchText) ? null : searchText.Trim();
 }

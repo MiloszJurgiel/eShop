@@ -54,7 +54,7 @@
 .catalog-search-input {
   border: 1px solid #cfcfcf;
   border-radius: 0.75rem;
-  font-family: 'Open Sans';
+  font-family: 'Open Sans', sans-serif;
   font-size: 1rem;
   padding: 0.75rem 1rem;
 }
