@@ -43,6 +43,37 @@
   min-width: 12rem;
 }
 
+.catalog-search-form {
+  border-top: 1px solid #404040;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+}
+
+.catalog-search-input {
+  border: 1px solid #cfcfcf;
+  border-radius: 0.75rem;
+  font-family: 'Open Sans';
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.catalog-search-button {
+  width: 100%;
+}
+
+.catalog-search-clear {
+  color: #404040;
+  display: inline-flex;
+  margin-top: 0.25rem;
+  text-decoration: none;
+}
+
+.catalog-search-clear:hover {
+  text-decoration: underline;
+}
+
 .catalog-search-tag {
   display: flex;
   padding: 0.5rem 0.75rem;

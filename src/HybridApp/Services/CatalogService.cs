@@ -17,8 +17,11 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
     }
 
     public async Task<CatalogResult> GetCatalogItems(int pageIndex, int pageSize, int? brand, int? type)
+        => await GetCatalogItems(pageIndex, pageSize, brand, type, null);
+
+    public async Task<CatalogResult> GetCatalogItems(int pageIndex, int pageSize, int? brand, int? type, string? searchText)
     {
-        var uri = GetAllCatalogItemsUri(remoteServiceBaseUrl, pageIndex, pageSize, brand, type);
+        var uri = GetAllCatalogItemsUri(remoteServiceBaseUrl, pageIndex, pageSize, brand, type, searchText);
         var result = await httpClient.GetFromJsonAsync($"{uri}&api-version=2.0", CatalogJsonContext.Default.CatalogResult);
         return result!;
     }
@@ -51,10 +54,14 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
         return result!;
     }
 
-    private static string GetAllCatalogItemsUri(string baseUri, int pageIndex, int pageSize, int? brand, int? type)
+    private static string GetAllCatalogItemsUri(string baseUri, int pageIndex, int pageSize, int? brand, int? type, string? searchText)
     {
         string filterQs = string.Empty;
 
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            filterQs += $"name={HttpUtility.UrlEncode(searchText.Trim())}&";
+        }
         if (type.HasValue)
         {
             filterQs += $"type={type.Value}&";

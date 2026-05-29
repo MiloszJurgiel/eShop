@@ -8,7 +8,7 @@
 <SectionContent SectionName="page-header-subtitle">Start the season with the latest in clothing and equipment.</SectionContent>
 
 <div class="catalog">
-    <CatalogSearch BrandId="@BrandId" ItemTypeId="@ItemTypeId" />
+    <CatalogSearch BrandId="@BrandId" ItemTypeId="@ItemTypeId" SearchText="@SearchText" />
 
     @if (catalogResult is null)
     {
@@ -18,9 +18,16 @@
     {
         <div>
             <div class="catalog-items">
-                @foreach (var item in catalogResult.Data)
+                @if (catalogResult.Data.Count == 0)
                 {
-                    <CatalogListItem Item="@item" />
+                    <p class="catalog-empty">No products matched your current search.</p>
+                }
+                else
+                {
+                    @foreach (var item in catalogResult.Data)
+                    {
+                        <CatalogListItem Item="@item" />
+                    }
                 }
             </div>
 
@@ -46,17 +53,21 @@
     [SupplyParameterFromQuery(Name = "type")]
     public int? ItemTypeId { get; set; }
 
+    [SupplyParameterFromQuery(Name = "search")]
+    public string? SearchText { get; set; }
+
     CatalogResult? catalogResult;
 
     static IEnumerable<int> GetVisiblePageIndexes(CatalogResult result)
         => Enumerable.Range(1, (int)Math.Ceiling(1.0 * result.Count / PageSize));
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         catalogResult = await CatalogService.GetCatalogItems(
             Page.GetValueOrDefault(1) - 1,
             PageSize,
             BrandId,
-            ItemTypeId);
+            ItemTypeId,
+            SearchText);
     }
 }
