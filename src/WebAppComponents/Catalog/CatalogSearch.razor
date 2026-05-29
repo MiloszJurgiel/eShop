@@ -8,6 +8,22 @@
             <img role="presentation" src="icons/filters.svg" />
             Filters
         </div>
+        <div class="catalog-search-group">
+            <h3>Search</h3>
+            <form class="catalog-search-form" @onsubmit="ApplySearch" @onsubmit:preventDefault>
+                <input class="catalog-search-input"
+                       type="search"
+                       @bind="searchText"
+                       @bind:event="oninput"
+                       placeholder="Search products"
+                       aria-label="Search products" />
+                <button class="button button-primary catalog-search-button" type="submit">Search</button>
+            </form>
+            @if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                <a class="catalog-search-clear" href="@SearchUri(null)">Clear search</a>
+            }
+        </div>
         <div class="catalog-search-types">
             <div class="catalog-search-group">
                 <h3>Brand</h3>
@@ -49,8 +65,11 @@
 @code {
     IEnumerable<CatalogBrand>? catalogBrands;
     IEnumerable<CatalogItemType>? catalogItemTypes;
+    string searchText = string.Empty;
+
     [Parameter] public int? BrandId { get; set; }
     [Parameter] public int? ItemTypeId { get; set; }
+    [Parameter] public string? SearchText { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -61,15 +80,37 @@
         catalogItemTypes = itemTypesTask.Result;
     }
 
+    protected override void OnParametersSet()
+    {
+        searchText = SearchText ?? string.Empty;
+    }
+
     private string BrandUri(int? brandId) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
     {
         { "page", null },
         { "brand", brandId },
+        { "type", ItemTypeId },
+        { "search", NormalizeSearch(SearchText) },
     });
 
     private string TypeUri(int? typeId) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
     {
         { "page", null },
+        { "brand", BrandId },
         { "type", typeId },
+        { "search", NormalizeSearch(SearchText) },
     });
+
+    private void ApplySearch() => Nav.NavigateTo(SearchUri(searchText));
+
+    private string SearchUri(string? text) => Nav.GetUriWithQueryParameters(new Dictionary<string, object?>()
+    {
+        { "page", null },
+        { "brand", BrandId },
+        { "type", ItemTypeId },
+        { "search", NormalizeSearch(text) },
+    });
+
+    private static string? NormalizeSearch(string? text)
+        => string.IsNullOrWhiteSpace(text) ? null : text.Trim();
 }
