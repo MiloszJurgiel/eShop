@@ -6,6 +6,17 @@ namespace eShop.Basket.API.Repositories;
 public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConnectionMultiplexer redis) : IBasketRepository
 {
     private readonly IDatabase _database = redis.GetDatabase();
+    private readonly TimeSpan _basketTtl = TimeSpan.FromDays(30);
+
+    public RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConnectionMultiplexer redis, Microsoft.Extensions.Options.IOptions<BasketOptions> options)
+        : this(logger, redis)
+    {
+        var configuredTtl = options.Value.RedisTtlDays;
+        if (configuredTtl > 0)
+        {
+            _basketTtl = TimeSpan.FromDays(configuredTtl);
+        }
+    }
 
     // implementation:
 
@@ -34,7 +45,7 @@ public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConne
     public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)
     {
         var json = JsonSerializer.SerializeToUtf8Bytes(basket, BasketSerializationContext.Default.CustomerBasket);
-        var created = await _database.StringSetAsync(GetBasketKey(basket.BuyerId), json);
+        var created = await _database.StringSetAsync(GetBasketKey(basket.BuyerId), json, _basketTtl);
 
         if (!created)
         {
@@ -44,7 +55,7 @@ public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConne
 
 
         logger.LogInformation("Basket item persisted successfully.");
-        return await GetBasketAsync(basket.BuyerId);
+        return basket;
     }
 }
 

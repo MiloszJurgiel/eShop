@@ -13,6 +13,9 @@ public static class Extensions
 
         builder.AddRedisClient("redis");
 
+        builder.Services.AddOptions<BasketOptions>()
+            .BindConfiguration("Basket");
+
         builder.Services.AddSingleton<IBasketRepository, RedisBasketRepository>();
 
         builder.AddRabbitMqEventBus("eventbus")
