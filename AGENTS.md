@@ -18,7 +18,7 @@
 - Trust [global.json](global.json) for SDK selection. This checkout pins .NET 10 preview even though [README.md](README.md) still mentions .NET 9.
 - For most web and backend changes, mirror [pr-validation.yml](.github/workflows/pr-validation.yml):
   - `dotnet build eShop.Web.slnf`
-  - `dotnet test --solution eShop.Web.slnf --no-build --no-progress --output detailed`
+  - `dotnet test eShop.Web.slnf --no-build --no-progress --output detailed`
 - Run the full application locally with `dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj`.
 - For MAUI-only work, mirror [pr-validation-maui.yml](.github/workflows/pr-validation-maui.yml):
   - `dotnet build src/ClientApp/ClientApp.csproj`
